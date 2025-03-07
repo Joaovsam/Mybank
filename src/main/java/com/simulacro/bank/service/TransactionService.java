@@ -11,7 +11,6 @@ import com.simulacro.bank.model.InvestmentTransaction;
 import com.simulacro.bank.model.TransactionInvestmentType;
 import com.simulacro.bank.model.TransactionType;
 import com.simulacro.bank.model.repository.AccountRepository;
-import com.simulacro.bank.model.repository.CustomerRepository;
 import com.simulacro.bank.model.repository.InvestmentCustomerRepository;
 import com.simulacro.bank.model.repository.InvestmentRepository;
 import com.simulacro.bank.model.repository.TransactionRepository;
@@ -156,7 +155,7 @@ public class TransactionService {
     }
 
     public Page<Transaction> getAllAccountTransactions(Long accountId, Pageable pageable) {
-        return transactionRepository.findByContaId(accountId, pageable);
+        return transactionRepository.findBankTransactions(accountId, pageable);
     }
 
 }

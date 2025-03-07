@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
-    @Query("SELECT t FROM Transacao t WHERE t.originAccount.id = :accountId OR t.destinationAccount.id = :accountId")
-    Page<Transaction> findByContaId(@Param("accountId") Long contaId, Pageable pageable);
+    @Query("SELECT t FROM Transaction t WHERE TYPE(t) = BankTransaction AND t.originAccount.id = :accountId")
+    Page<Transaction> findBankTransactions(@Param("accountId") Long accountId, Pageable pageable);
 
 }

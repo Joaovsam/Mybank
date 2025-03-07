@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "accounts")
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "accountType")
 public abstract class Account {
 
     @Id
@@ -28,10 +27,10 @@ public abstract class Account {
     @JoinColumn(name = "customerId")
     private Customer customer;
 
-    @OneToMany(mappedBy = "senderAccount", cascade = CascadeType.ALL)
-    private List<Transaction> sendTransactions;
+    @OneToMany(mappedBy = "originAccount", cascade = CascadeType.ALL)
+    private List<BankTransaction> sendTransactions;
 
-    @OneToMany(mappedBy = "receivedAccount", cascade = CascadeType.ALL)
-    private List<Transaction> receivedTransactions;
+    @OneToMany(mappedBy = "destinationAccount", cascade = CascadeType.ALL)
+    private List<BankTransaction> receivedTransactions;
 
 }

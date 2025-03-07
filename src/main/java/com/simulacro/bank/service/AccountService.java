@@ -19,7 +19,7 @@ public class AccountService {
     private final AccountRepository accountRepository;
 
     public Page<Account> getAllAccounts(Pageable pageable) {
-        return accountRepository.FindAll(pageable);
+        return accountRepository.findAll(pageable);
     }
 
     public Account getAccount(Long id) {
@@ -28,7 +28,7 @@ public class AccountService {
     }
 
     public List<Account> getAccountFromCustomer(Long id) {
-        List<Account> account = accountRepository.findByClienteId(id);
+        List<Account> account = accountRepository.findByCustomerId(id);
         if (account.isEmpty()) {
             throw new BankException("Customer doesn't have accounts");
         }
