@@ -28,7 +28,9 @@ public class Customer {
     private String identityNumber;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<Account> contas; //
-
+    private List<Account> contas;
     
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<InvestmentCustomer> investmentCustomer;
+
 }
