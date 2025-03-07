@@ -1,4 +1,4 @@
-package com.simulacro.bank.model.repository;
+package com.simulacro.bank.repository;
 
 import com.simulacro.bank.model.InvestmentCustomer;
 import java.util.List;

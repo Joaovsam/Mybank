@@ -1,4 +1,4 @@
-package com.simulacro.bank.model.repository;
+package com.simulacro.bank.repository;
 
 import com.simulacro.bank.model.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;

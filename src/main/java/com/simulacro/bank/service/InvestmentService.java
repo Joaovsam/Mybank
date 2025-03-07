@@ -3,8 +3,8 @@ package com.simulacro.bank.service;
 import com.simulacro.bank.handler.BankException;
 import com.simulacro.bank.model.Investment;
 import com.simulacro.bank.model.InvestmentCustomer;
-import com.simulacro.bank.model.repository.InvestmentCustomerRepository;
-import com.simulacro.bank.model.repository.InvestmentRepository;
+import com.simulacro.bank.repository.InvestmentCustomerRepository;
+import com.simulacro.bank.repository.InvestmentRepository;
 import jakarta.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +21,7 @@ public class InvestmentService {
     private final InvestmentRepository investmentRepository;
     private final InvestmentCustomerRepository investmentCustomerRepository;
 
-    public Page<Investment> getInvestments(Pageable pageable) {
+    public Page<Investment> getAllInvestments(Pageable pageable) {
         return investmentRepository.findAll(pageable);
     }
 

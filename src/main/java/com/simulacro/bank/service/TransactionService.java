@@ -10,10 +10,10 @@ import com.simulacro.bank.model.Transaction;
 import com.simulacro.bank.model.InvestmentTransaction;
 import com.simulacro.bank.model.TransactionInvestmentType;
 import com.simulacro.bank.model.TransactionType;
-import com.simulacro.bank.model.repository.AccountRepository;
-import com.simulacro.bank.model.repository.InvestmentCustomerRepository;
-import com.simulacro.bank.model.repository.InvestmentRepository;
-import com.simulacro.bank.model.repository.TransactionRepository;
+import com.simulacro.bank.repository.AccountRepository;
+import com.simulacro.bank.repository.InvestmentCustomerRepository;
+import com.simulacro.bank.repository.InvestmentRepository;
+import com.simulacro.bank.repository.TransactionRepository;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
@@ -88,7 +88,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public Transaction buyInvestment(Long investmentId, Long customerId, Long accountId, BigDecimal aplicationPrice, BigDecimal transactionTax) {
+    public Transaction buyInvestment(Long investmentId, Long accountId, BigDecimal aplicationPrice, BigDecimal transactionTax) {
         Investment investment = investmentRepository.findById(investmentId).orElseThrow(() -> new BankException("Investment not Found"));
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new BankException("Account not Found"));
         Customer customer = account.getCustomer();
@@ -122,7 +122,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public Transaction sellInvestment(Long investmentCustomerId, Long accountId, BigDecimal value, BigDecimal quantity, BigDecimal transactionTax) {
+    public Transaction sellInvestment(Long investmentCustomerId, Long accountId, BigDecimal quantity, BigDecimal transactionTax) {
         InvestmentCustomer investmentCustomer = investmentCustomerRepository.findById(investmentCustomerId).orElseThrow(() -> new BankException("Investment not Found"));
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new BankException("Account not Found"));
         Investment investment = investmentCustomer.getInvestment();

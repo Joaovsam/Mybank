@@ -2,7 +2,7 @@ package com.simulacro.bank.service;
 
 import com.simulacro.bank.handler.BankException;
 import com.simulacro.bank.model.Customer;
-import com.simulacro.bank.model.repository.CustomerRepository;
+import com.simulacro.bank.repository.CustomerRepository;
 import jakarta.transaction.Transactional;
 import java.util.Arrays;
 import java.util.Objects;
