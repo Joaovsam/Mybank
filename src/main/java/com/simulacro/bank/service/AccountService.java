@@ -1,12 +1,12 @@
 package com.simulacro.bank.service;
 
+import com.simulacro.bank.DTO.AccountDTO;
 import com.simulacro.bank.handler.BankException;
+import com.simulacro.bank.mapper.AccountMapper;
 import com.simulacro.bank.model.Account;
 import com.simulacro.bank.repository.AccountRepository;
 import jakarta.transaction.Transactional;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,49 +17,40 @@ import org.springframework.stereotype.Service;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final AccountMapper accountMapper;
 
-    public Page<Account> getAllAccounts(Pageable pageable) {
-        return accountRepository.findAll(pageable);
+    public Page<AccountDTO> getAllAccounts(Pageable pageable) {
+        Page<Account> accounts = accountRepository.findAll(pageable);
+        return accountMapper.accounsToAccountDto(accounts);
     }
 
-    public Account getAccount(Long id) {
+    public AccountDTO getAccount(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new BankException("Account not found!"));
-        return account;
+        return accountMapper.accountToAccountDto(account);
     }
 
-    public List<Account> getAccountFromCustomer(Long id) {
-        List<Account> account = accountRepository.findByCustomerId(id);
-        if (account.isEmpty()) {
+    public List<AccountDTO> getAccountFromCustomer(Long id) {
+        List<Account> accounts = accountRepository.findByCustomerId(id);
+        if (accounts.isEmpty()) {
             throw new BankException("Customer doesn't have accounts");
         }
-        return account;
+        return accountMapper.accountListToAccountDtoList(accounts);
     }
 
     @Transactional
-    public Account createAccount(Account newAccount) {
+    public AccountDTO createAccount(Account newAccount) {
         Account account = accountRepository.save(newAccount);
-        return account;
+        return accountMapper.accountToAccountDto(account);
     }
 
     @Transactional
-    public Account updateAccount(Account updatedAccount, Long id) {
+    public AccountDTO updateAccount(AccountDTO accountDto, Long id) {
         Account oldAccount = accountRepository.findById(id).orElseThrow(() -> new BankException("Account not Found"));
 
-        //Colocar mapstruct
-        Arrays.stream(updatedAccount.getClass().getDeclaredFields())
-                .forEach(field -> {
-                    field.setAccessible(true);
-                    try {
-                        Object newValue = field.get(updatedAccount);
-                        if (Objects.nonNull(newValue)) {
-                            field.set(oldAccount, newValue);
-                        }
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException("Erro ao atualizar campos", e);
-                    }
-                });
+        accountMapper.accountDtoToAccount(accountDto, oldAccount);
+        oldAccount = accountRepository.save(oldAccount);
 
-        return accountRepository.save(oldAccount);
+        return accountMapper.accountToAccountDto(oldAccount);
     }
 
     @Transactional

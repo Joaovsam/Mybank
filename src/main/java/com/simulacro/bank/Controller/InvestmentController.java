@@ -27,7 +27,7 @@ public class InvestmentController {
 
     private final InvestmentService investmentService;
 
-    @GetMapping("/")
+    @GetMapping("/pageable")
     @Operation(summary = "Gets all investments", description = "Return all investment with pagination")
     public ResponseEntity<Page<Investment>> getAllInvestments(Pageable pageable) {
         return ResponseEntity.ok(investmentService.getAllInvestments(pageable));

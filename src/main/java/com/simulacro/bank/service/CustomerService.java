@@ -1,6 +1,8 @@
 package com.simulacro.bank.service;
 
+import com.simulacro.bank.DTO.CustomerDTO;
 import com.simulacro.bank.handler.BankException;
+import com.simulacro.bank.mapper.CustomerMapper;
 import com.simulacro.bank.model.Customer;
 import com.simulacro.bank.repository.CustomerRepository;
 import jakarta.transaction.Transactional;
@@ -16,42 +18,33 @@ import org.springframework.stereotype.Service;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final CustomerMapper customerMapper;
 
-    public Page<Customer> findCustomers(Pageable pageable) {
-        Page<Customer> customer = customerRepository.findAll(pageable);
-        return customer;
+    public Page<CustomerDTO> findCustomers(Pageable pageable) {
+        Page<Customer> customers = customerRepository.findAll(pageable);
+        Page<CustomerDTO> customersDto = customerMapper.customersToCustomersDto(customers);
+        return customersDto;
     }
 
-    public Customer findCustomerById(Long id) {
+    public CustomerDTO findCustomerById(Long id) {
         Customer customer = customerRepository.findById(id).orElseThrow(() -> new BankException("Customer not Found"));
-        return customer;
+        return customerMapper.customerToCustomerDto(customer);
     }
 
     @Transactional
-    public Customer createCustomer(Customer newCustomer) {
-        Customer customer = customerRepository.save(newCustomer);
-        return customer;
+    public CustomerDTO createCustomer(CustomerDTO customerDto) {
+        Customer newCustomer = new Customer();
+        customerMapper.CustomerDtoToCustomer(newCustomer, customerDto);
+        newCustomer = customerRepository.save(newCustomer);
+        return customerMapper.customerToCustomerDto(newCustomer);
     }
 
     @Transactional
-    public Customer updateCustomer(Customer updatedCustomer, Long id) {
+    public CustomerDTO updateCustomer(CustomerDTO customerDto, Long id) {
         Customer oldCustomer = customerRepository.findById(id).orElseThrow(() -> new BankException("Customer not Found"));
-
-        //Colocar mapstruct
-        Arrays.stream(updatedCustomer.getClass().getDeclaredFields())
-                .forEach(field -> {
-                    field.setAccessible(true);
-                    try {
-                        Object newValue = field.get(updatedCustomer);
-                        if (Objects.nonNull(newValue)) {
-                            field.set(oldCustomer, newValue);
-                        }
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException("Erro ao atualizar campos", e);
-                    }
-                });
-
-        return customerRepository.save(oldCustomer);
+        customerMapper.CustomerDtoToCustomer(oldCustomer, customerDto);
+        Customer updatedCustomer = customerRepository.save(oldCustomer);
+        return customerMapper.customerToCustomerDto(updatedCustomer);
     }
 
     @Transactional
