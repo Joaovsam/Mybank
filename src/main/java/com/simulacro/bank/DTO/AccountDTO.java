@@ -1,5 +1,6 @@
 package com.simulacro.bank.DTO;
 
+import com.simulacro.bank.model.AccountType;
 import java.math.BigDecimal;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ public class AccountDTO {
     private BigDecimal balance;
     private double yieldRate;
     private double creditLimit;
-    private String accountType;
+    private AccountType accountType;
+    private Long customerId;
 
 }

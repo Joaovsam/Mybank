@@ -4,7 +4,11 @@ import com.simulacro.bank.DTO.AccountDTO;
 import com.simulacro.bank.handler.BankException;
 import com.simulacro.bank.mapper.AccountMapper;
 import com.simulacro.bank.model.Account;
+import com.simulacro.bank.model.CurrentAccount;
+import com.simulacro.bank.model.Customer;
+import com.simulacro.bank.model.SavingsAccount;
 import com.simulacro.bank.repository.AccountRepository;
+import com.simulacro.bank.repository.CustomerRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Service;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final CustomerRepository customerRepository;
     private final AccountMapper accountMapper;
 
     public Page<AccountDTO> getAllAccounts(Pageable pageable) {
@@ -38,8 +43,17 @@ public class AccountService {
     }
 
     @Transactional
-    public AccountDTO createAccount(Account newAccount) {
-        Account account = accountRepository.save(newAccount);
+    public AccountDTO createAccount(AccountDTO accountDTO) {
+        Customer customer = customerRepository.findById(accountDTO.getCustomerId()).orElseThrow(() -> new BankException("Customer not Found"));
+        Account account;
+        if (accountDTO.getAccountType().name().equals("CURRENT")) {
+            account = new CurrentAccount();
+        } else {
+            account = new SavingsAccount();
+        }
+        account.setCustomer(customer);
+        accountMapper.accountDtoToAccount(accountDTO, account);
+        account = accountRepository.save(account);
         return accountMapper.accountToAccountDto(account);
     }
 

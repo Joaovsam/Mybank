@@ -1,5 +1,6 @@
 package com.simulacro.bank.Controller;
 
+import com.simulacro.bank.DTO.InvestmentDTO;
 import com.simulacro.bank.model.Investment;
 import com.simulacro.bank.model.InvestmentCustomer;
 import com.simulacro.bank.service.InvestmentService;
@@ -29,13 +30,13 @@ public class InvestmentController {
 
     @GetMapping("/pageable")
     @Operation(summary = "Gets all investments", description = "Return all investment with pagination")
-    public ResponseEntity<Page<Investment>> getAllInvestments(Pageable pageable) {
+    public ResponseEntity<Page<InvestmentDTO>> getAllInvestments(Pageable pageable) {
         return ResponseEntity.ok(investmentService.getAllInvestments(pageable));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Gets investment", description = "Return investment by Id")
-    public ResponseEntity<Investment> getInvestmentById(@PathVariable Long id) {
+    public ResponseEntity<InvestmentDTO> getInvestmentById(@PathVariable Long id) {
         return ResponseEntity.ok(investmentService.getInvestmentById(id));
     }
 
@@ -47,14 +48,14 @@ public class InvestmentController {
 
     @PostMapping("/")
     @Operation(summary = "Create investment", description = "Create a investment to be listed in the bank system")
-    public ResponseEntity<Investment> createInvestment(@RequestBody Investment investment) {
-        return ResponseEntity.ok(investmentService.createInvestment(investment));
+    public ResponseEntity<InvestmentDTO> createInvestment(@RequestBody InvestmentDTO investmentDto) {
+        return ResponseEntity.ok(investmentService.createInvestment(investmentDto));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update the investments", description = "Update the informations of a investment")
-    public ResponseEntity<Investment> updateInvestment(@RequestBody Investment investment, @PathVariable Long id) {
-        return ResponseEntity.ok(investmentService.updateInvestment(investment, id));
+    public ResponseEntity<InvestmentDTO> updateInvestment(@RequestBody InvestmentDTO investmentDto, @PathVariable Long id) {
+        return ResponseEntity.ok(investmentService.updateInvestment(investmentDto, id));
     }
 
     @DeleteMapping("/{id}")

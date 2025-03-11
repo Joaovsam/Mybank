@@ -2,6 +2,7 @@ package com.simulacro.bank.mapper;
 
 import com.simulacro.bank.DTO.InvestmentDTO;
 import com.simulacro.bank.model.Investment;
+import java.util.List;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -22,4 +23,6 @@ public interface InvestmentMapper {
     default Page<InvestmentDTO> investmentsToInvestmentsDto(Page<Investment> investments) {
         return investments.map(this::investmentToInvestmentDto);
     }
+
+    List<InvestmentDTO> investmentListToInvestmentDtoList(List<Investment> investment);
 }

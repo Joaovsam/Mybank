@@ -1,14 +1,14 @@
 package com.simulacro.bank.service;
 
+import com.simulacro.bank.DTO.InvestmentDTO;
 import com.simulacro.bank.handler.BankException;
+import com.simulacro.bank.mapper.InvestmentMapper;
 import com.simulacro.bank.model.Investment;
 import com.simulacro.bank.model.InvestmentCustomer;
 import com.simulacro.bank.repository.InvestmentCustomerRepository;
 import com.simulacro.bank.repository.InvestmentRepository;
 import jakarta.transaction.Transactional;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,13 +20,15 @@ public class InvestmentService {
 
     private final InvestmentRepository investmentRepository;
     private final InvestmentCustomerRepository investmentCustomerRepository;
+    private final InvestmentMapper investmentMapper;
 
-    public Page<Investment> getAllInvestments(Pageable pageable) {
-        return investmentRepository.findAll(pageable);
+    public Page<InvestmentDTO> getAllInvestments(Pageable pageable) {
+        return investmentMapper.investmentsToInvestmentsDto(investmentRepository.findAll(pageable));
     }
 
-    public Investment getInvestmentById(Long id) {
-        return investmentRepository.findById(id).orElseThrow(() -> new BankException("Investment not found"));
+    public InvestmentDTO getInvestmentById(Long id) {
+        Investment investment = investmentRepository.findById(id).orElseThrow(() -> new BankException("Investment not found"));
+        return investmentMapper.investmentToInvestmentDto(investment);
     }
 
     public List<InvestmentCustomer> getCustomerInvestments(Long id) {
@@ -34,29 +36,21 @@ public class InvestmentService {
     }
 
     @Transactional
-    public Investment createInvestment(Investment newInvestment) {
-        Investment investment = investmentRepository.save(newInvestment);
-        return investment;
+    public InvestmentDTO createInvestment(InvestmentDTO investmentDTO) {
+        Investment newInvestment = new Investment();
+        investmentMapper.investmentDtoToInvestment(newInvestment, investmentDTO);
+        newInvestment = investmentRepository.save(newInvestment);
+        return investmentMapper.investmentToInvestmentDto(newInvestment);
     }
 
     @Transactional
-    public Investment updateInvestment(Investment updatedInvestment, Long id) {
+    public InvestmentDTO updateInvestment(InvestmentDTO investmentDto, Long id) {
         Investment oldInvestment = investmentRepository.findById(id).orElseThrow(() -> new BankException("Investment not found"));
 
-        Arrays.stream(updatedInvestment.getClass().getDeclaredFields())
-                .forEach(field -> {
-                    field.setAccessible(true);
-                    try {
-                        Object newValue = field.get(updatedInvestment);
-                        if (Objects.nonNull(newValue)) {
-                            field.set(oldInvestment, newValue);
-                        }
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException("Erro ao atualizar campos", e);
-                    }
-                });
+        investmentMapper.investmentDtoToInvestment(oldInvestment, investmentDto);
+        oldInvestment = investmentRepository.save(oldInvestment);
 
-        return investmentRepository.save(updatedInvestment);
+        return investmentMapper.investmentToInvestmentDto(oldInvestment);
     }
 
     @Transactional

@@ -48,15 +48,9 @@ public class AccountController {
         return new ResponseEntity<>(accountService.getAccountFromCustomer(id), HttpStatus.OK);
     }
 
-    @PostMapping("/current")
-    @Operation(summary = "Create a current account", description = "Create a Current Account passing her number account, agency, and credit Limit")
-    public ResponseEntity<AccountDTO> createCurrentAccount(@RequestBody CurrentAccount account) {
-        return new ResponseEntity<>(accountService.createAccount(account), HttpStatus.OK);
-    }
-
-    @PostMapping("/savings")
-    @Operation(summary = "Create a saving account", description = "Create a saving account passing her number account, agency, and yeld rate")
-    public ResponseEntity<AccountDTO> createSavingAccount(@RequestBody SavingsAccount account) {
+    @PostMapping("/")
+    @Operation(summary = "Create a current account", description = "Create a Current Account passing its accountType(CURRENT/SAVINGS),number account, agency, credit Limit, and his ID")
+    public ResponseEntity<AccountDTO> createCurrentAccount(@RequestBody AccountDTO account) {
         return new ResponseEntity<>(accountService.createAccount(account), HttpStatus.OK);
     }
 
